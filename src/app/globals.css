@@ -1,26 +1,372 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════
+   TAILWIND THEME BRIDGE
+   Maps CSS variables → Tailwind color tokens
+═══════════════════════════════════════════════════════════════ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:          var(--background);
+  --color-foreground:          var(--foreground);
+  --font-sans:                 var(--font-inter);
+  --color-ring:                var(--ring);
+  --color-input:               var(--input);
+  --color-border:              var(--border);
+  --color-destructive:         var(--destructive);
+  --color-accent-foreground:   var(--accent-foreground);
+  --color-accent:              var(--accent);
+  --color-muted-foreground:    var(--muted-foreground);
+  --color-muted:               var(--muted);
+  --color-secondary-foreground:var(--secondary-foreground);
+  --color-secondary:           var(--secondary);
+  --color-primary-foreground:  var(--primary-foreground);
+  --color-primary:             var(--primary);
+  --color-popover-foreground:  var(--popover-foreground);
+  --color-popover:             var(--popover);
+  --color-card-foreground:     var(--card-foreground);
+  --color-card:                var(--card);
+  --radius-sm:  calc(var(--radius) - 4px);
+  --radius-md:  calc(var(--radius) - 2px);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* ── 8pt Spacing Grid ─────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ── Typography Scale Tokens ──────────── */
+  --text-display-size:    clamp(2rem, 4vw, 3rem);
+  --text-display-weight:  600;
+  --text-display-tracking:-0.025em;
+  --text-display-leading: 1.1;
+
+  --text-section-size:    1.5rem;
+  --text-section-weight:  600;
+  --text-section-tracking:-0.02em;
+  --text-section-leading: 1.25;
+
+  --text-card-size:       1.125rem;
+  --text-card-weight:     500;
+  --text-card-tracking:   -0.015em;
+  --text-card-leading:    1.3;
+
+  --text-data-primary-size:    0.9375rem;
+  --text-data-primary-weight:  500;
+  --text-data-primary-tracking:-0.01em;
+  --text-data-primary-leading: 1.4;
+
+  --text-data-secondary-size:   0.8125rem;
+  --text-data-secondary-weight: 400;
+  --text-data-secondary-leading:1.5;
+
+  --text-micro-size:    0.6875rem;
+  --text-micro-weight:  500;
+  --text-micro-tracking:0.06em;
+  --text-micro-leading: 1.4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT MODE — :root defaults
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --radius: 0.75rem;
+
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --background:     #F2F2F5;
+  --surface:        #FFFFFF;
+  --surface-raised: #F7F7FA;
+  --foreground:     #111118;
+
+  /* ── Card (used by Tailwind token) ───────────────────── */
+  --card:           #FFFFFF;
+  --card-foreground:#111118;
+  --popover:        #FFFFFF;
+  --popover-foreground:#111118;
+
+  /* ── Brand ───────────────────────────────────────────── */
+  --primary:        #7C3AED;
+  --primary-foreground:#FFFFFF;
+
+  /* ── Neutrals ─────────────────────────────────────────── */
+  --secondary:      rgba(0, 0, 0, 0.05);
+  --secondary-foreground:#111118;
+  --muted:          rgba(0, 0, 0, 0.05);
+  --muted-foreground:#64647A;
+  --accent:         rgba(124, 58, 237, 0.10);
+  --accent-foreground:#7C3AED;
+
+  /* ── Borders & inputs ─────────────────────────────────── */
+  --border:         rgba(0, 0, 0, 0.09);
+  --input:          rgba(0, 0, 0, 0.07);
+  --ring:           rgba(124, 58, 237, 0.30);
+
+  /* ── Semantic ─────────────────────────────────────────── */
+  --destructive:    #DC2626;
+
+  /* ── Text aliases ─────────────────────────────────────── */
+  --text-primary:   #111118;
+  --text-secondary: #4B4B62;
+  --text-muted:     #94949E;
+
+  /* ── Shadows ──────────────────────────────────────────── */
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:      0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-topbar:  0 1px 0 rgba(0,0,0,0.08);
+
+  /* ── Chart axis / grid ────────────────────────────────── */
+  --chart-axis:     #9A9AB0;
+  --chart-grid:     rgba(0,0,0,0.06);
+  --chart-tooltip-bg:    #FFFFFF;
+  --chart-tooltip-border:rgba(0,0,0,0.08);
+  --chart-cursor:   rgba(0,0,0,0.03);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — .dark overrides
+═══════════════════════════════════════════════════════════════ */
+.dark {
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --background:     #13131A;
+  --surface:        rgba(255,255,255,0.03);
+  --surface-raised: #1C1C26;
+  --foreground:     #EDEDF0;
+
+  /* ── Card ─────────────────────────────────────────────── */
+  --card:           rgba(255,255,255,0.03);
+  --card-foreground:#EDEDF0;
+  --popover:        #1C1C26;
+  --popover-foreground:#EDEDF0;
+
+  /* ── Brand ───────────────────────────────────────────── */
+  --primary:        #7C3AED;
+  --primary-foreground:#FFFFFF;
+
+  /* ── Neutrals ─────────────────────────────────────────── */
+  --secondary:      rgba(255,255,255,0.05);
+  --secondary-foreground:#EDEDF0;
+  --muted:          rgba(255,255,255,0.05);
+  --muted-foreground:#6B6B7B;
+  --accent:         rgba(124,58,237,0.12);
+  --accent-foreground:#A78BFA;
+
+  /* ── Borders & inputs ─────────────────────────────────── */
+  --border:         rgba(255,255,255,0.07);
+  --input:          rgba(255,255,255,0.07);
+  --ring:           rgba(124,58,237,0.35);
+
+  /* ── Semantic ─────────────────────────────────────────── */
+  --destructive:    #EF4444;
+
+  /* ── Text aliases ─────────────────────────────────────── */
+  --text-primary:   #EDEDF0;
+  --text-secondary: #9A9AAF;
+  --text-muted:     #6B6B7B;
+
+  /* ── Shadows ──────────────────────────────────────────── */
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.40);
+  --shadow-md:      0 4px 24px rgba(0,0,0,0.50);
+  --shadow-topbar:  0 1px 24px rgba(0,0,0,0.50);
+
+  /* ── Chart axis / grid ────────────────────────────────── */
+  --chart-axis:     #52525B;
+  --chart-grid:     rgba(255,255,255,0.04);
+  --chart-tooltip-bg:    #1C1C26;
+  --chart-tooltip-border:rgba(255,255,255,0.08);
+  --chart-cursor:   rgba(255,255,255,0.03);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE LAYER
+═══════════════════════════════════════════════════════════════ */
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Anti-flash: class is applied synchronously by inline script in layout.tsx */
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Smooth theme transitions — no layout shift */
+    transition:
+      background-color 200ms ease,
+      color 200ms ease;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT UTILS
+═══════════════════════════════════════════════════════════════ */
+
+/* Glass / surface card */
+.glass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+/* Topbar megapanel background */
+.mega-panel-bg {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+}
+
+.dark .mega-panel-bg {
+  background: rgba(22, 22, 31, 0.95);
+}
+
+/* Transitions for interactive elements */
+.theme-transition {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes press {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+   6-level fintech/Web3 scale — use instead of arbitrary text-[Npx]
+═══════════════════════════════════════════════════════════════ */
+@layer utilities {
+
+  /* L1 — Display: Portfolio value, TVL highlight */
+  .text-display {
+    font-size: var(--text-display-size);
+    font-weight: var(--text-display-weight);
+    letter-spacing: var(--text-display-tracking);
+    line-height: var(--text-display-leading);
+    color: var(--text-primary);
+  }
+
+  /* L2 — Section heading: page titles */
+  .text-section {
+    font-size: var(--text-section-size);
+    font-weight: var(--text-section-weight);
+    letter-spacing: var(--text-section-tracking);
+    line-height: var(--text-section-leading);
+    color: var(--text-primary);
+  }
+
+  /* L3 — Card heading: widget/card titles */
+  .text-card-heading {
+    font-size: var(--text-card-size);
+    font-weight: var(--text-card-weight);
+    letter-spacing: var(--text-card-tracking);
+    line-height: var(--text-card-leading);
+    color: var(--text-primary);
+  }
+
+  /* L4 — Table primary: protocol name, token name */
+  .text-data-primary {
+    font-size: var(--text-data-primary-size);
+    font-weight: var(--text-data-primary-weight);
+    letter-spacing: var(--text-data-primary-tracking);
+    line-height: var(--text-data-primary-leading);
+    color: var(--text-primary);
+  }
+
+  /* L5 — Secondary data: subtitles, meta info */
+  .text-data-secondary {
+    font-size: var(--text-data-secondary-size);
+    font-weight: var(--text-data-secondary-weight);
+    line-height: var(--text-data-secondary-leading);
+    color: var(--text-secondary);
+  }
+
+  /* L6 — Micro: badges, tooltips, table headers */
+  .text-micro {
+    font-size: var(--text-micro-size);
+    font-weight: var(--text-micro-weight);
+    letter-spacing: var(--text-micro-tracking);
+    line-height: var(--text-micro-leading);
+    color: var(--text-muted);
+  }
+
+  /* Table column headers — uppercase micro */
+  .text-table-header {
+    font-size: var(--text-micro-size);
+    font-weight: var(--text-micro-weight);
+    letter-spacing: 0.08em;
+    line-height: var(--text-micro-leading);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Risk score number — 18px/600 + tabular-nums */
+  .text-risk-score {
+    font-size: var(--text-card-size);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    line-height: 1;
+  }
+
+  /* KPI stat numbers — 24-32px */
+  .text-stat {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Semantic color overrides */
+  .text-primary   { color: var(--text-primary) !important; }
+  .text-secondary { color: var(--text-secondary) !important; }
+  .text-muted     { color: var(--text-muted) !important; }
+
+  /* Tabular number rendering */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.01em;
+  }
+
+  .tracking-tighter-num { letter-spacing: -0.025em; }
 }
