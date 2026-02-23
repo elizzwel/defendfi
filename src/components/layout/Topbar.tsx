@@ -194,6 +194,7 @@ const NAV_ITEMS: NavItem[] = [
     columns: RISK_INTELLIGENCE_COLUMNS,
   },
   { type: 'link', href: '/alerts', label: 'Alerts' },
+  { type: 'link', href: '/degen-radar', label: 'Degen Radar' },
   {
     type: 'mega',
     label: 'Research',
