@@ -82,7 +82,35 @@ export interface TokenDetail extends MemeToken {
   liquidityDepth: number;
   volumeSpikeRatio: number;   // h1 volume / h6 avg
   aiInsight: string;
+  whaleActivity: WhaleActivity;
+  pumpProbability: PumpProbability;
 }
+
+/** Whale activity metrics derived from txn data */
+export interface WhaleActivity {
+  netInflow24h: number;       // -1 to +1 (sell-heavy to buy-heavy)
+  avgTxSize: number;          // avg $ per transaction
+  buyPressure: number;        // 0–100 (% of txns that are buys)
+  largestEstTx: number;       // estimated largest single tx ($)
+  whaleConcentration: number; // 0–100 score
+  riskLabel: WhaleRiskLabel;
+}
+
+export type WhaleRiskLabel = 'Neutral' | 'Accumulating' | 'Distributing';
+
+/** Pump probability from logistic model */
+export interface PumpProbability {
+  probability: number;        // 0–100
+  label: PumpLabel;
+  features: {
+    volumeAcceleration: number;
+    liquidityInflow: number;
+    momentumTrend: number;
+    holderGrowth: number;
+  };
+}
+
+export type PumpLabel = 'Low' | 'Moderate' | 'Elevated' | 'Extreme';
 
 /** Single chart data point */
 export interface ChartDataPoint {
@@ -96,3 +124,4 @@ export interface ChartDataPoint {
 
 /** Chart interval options */
 export type ChartInterval = '15m' | '1h' | '4h' | '1D';
+

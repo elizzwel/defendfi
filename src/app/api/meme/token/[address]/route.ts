@@ -3,6 +3,8 @@ import type { DexScreenerPair, TokenDetail } from '@/lib/meme/types';
 import { cacheGet, cacheSet } from '@/lib/meme/cache';
 import { computeVolatilityScore, getRiskLevel } from '@/lib/meme/scoring';
 import { generateInsight } from '@/lib/meme/insight';
+import { computeWhaleMetrics } from '@/lib/meme/whale';
+import { computePumpProbability } from '@/lib/meme/pump';
 
 function formatAge(ms: number): string {
   const hours = ms / (1000 * 60 * 60);
@@ -61,6 +63,10 @@ function buildTokenDetail(pair: DexScreenerPair): TokenDetail {
     ageMs,
   });
 
+  // Whale activity & pump probability
+  const whaleActivity = computeWhaleMetrics(pair);
+  const pumpProbability = computePumpProbability(pair);
+
   return {
     address: pair.baseToken.address,
     name: pair.baseToken.name,
@@ -83,6 +89,8 @@ function buildTokenDetail(pair: DexScreenerPair): TokenDetail {
     liquidityDepth: liquidity,
     volumeSpikeRatio,
     aiInsight,
+    whaleActivity,
+    pumpProbability,
     imageUrl: pair.info?.imageUrl,
   };
 }
