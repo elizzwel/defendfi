@@ -4,7 +4,11 @@ import { useTokenDetail } from '@/hooks/useDegenRadar';
 import { PriceChart } from './PriceChart';
 import { VolatilityBadge } from './VolatilityBadge';
 import { cn } from '@/lib/utils';
-import { X, ExternalLink, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import type { WhaleRiskLabel, PumpLabel } from '@/lib/meme/types';
+import {
+    X, ExternalLink, TrendingUp, TrendingDown, Minus,
+    Anchor, BarChart3, ArrowUpRight, ArrowDownRight,
+} from 'lucide-react';
 
 function fmt(n: number, decimals = 2): string {
     if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(decimals)}B`;
@@ -49,6 +53,71 @@ function MetricRow({ label, value }: { label: string; value: string | React.Reac
     );
 }
 
+/* Whale risk label badge */
+const WHALE_COLORS: Record<WhaleRiskLabel, { bg: string; text: string; dot: string }> = {
+    Neutral: { bg: 'bg-slate-500/10', text: 'text-slate-400', dot: 'bg-slate-400' },
+    Accumulating: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', dot: 'bg-emerald-400' },
+    Distributing: { bg: 'bg-red-500/10', text: 'text-red-400', dot: 'bg-red-400' },
+};
+
+function WhaleLabel({ label }: { label: WhaleRiskLabel }) {
+    const c = WHALE_COLORS[label];
+    return (
+        <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-semibold', c.bg, c.text)}>
+            <span className={cn('w-1.5 h-1.5 rounded-full', c.dot)} />
+            {label}
+        </span>
+    );
+}
+
+/* Pump probability badge */
+const PUMP_COLORS: Record<PumpLabel, { bg: string; text: string }> = {
+    Low: { bg: 'bg-slate-500/10', text: 'text-slate-400' },
+    Moderate: { bg: 'bg-amber-500/10', text: 'text-amber-400' },
+    Elevated: { bg: 'bg-orange-500/10', text: 'text-orange-400' },
+    Extreme: { bg: 'bg-red-500/10', text: 'text-red-400' },
+};
+
+/* Pump probability radial gauge */
+function PumpGauge({ probability, label }: { probability: number; label: PumpLabel }) {
+    const c = PUMP_COLORS[label];
+    const circumference = 2 * Math.PI * 36;
+    const offset = circumference - (probability / 100) * circumference;
+
+    return (
+        <div className="flex flex-col items-center gap-2">
+            <div className="relative w-20 h-20">
+                <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                    <circle
+                        cx="40" cy="40" r="36"
+                        fill="none"
+                        stroke="var(--border)"
+                        strokeWidth="5"
+                    />
+                    <circle
+                        cx="40" cy="40" r="36"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="5"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={offset}
+                        strokeLinecap="round"
+                        className={cn('transition-all duration-700', c.text)}
+                    />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[18px] font-bold font-mono num" style={{ color: 'var(--text-primary)' }}>
+                        {probability}%
+                    </span>
+                </div>
+            </div>
+            <span className={cn('px-2 py-0.5 rounded-full text-[10.5px] font-semibold', c.bg, c.text)}>
+                {label}
+            </span>
+        </div>
+    );
+}
+
 export function TokenPanel({
     address,
     onClose,
@@ -84,6 +153,9 @@ export function TokenPanel({
             </div>
         );
     }
+
+    const whale = token.whaleActivity;
+    const pump = token.pumpProbability;
 
     return (
         <div
@@ -212,6 +284,67 @@ export function TokenPanel({
                         />
                     </div>
 
+                    {/* ── Whale Activity ───────────────────────────────────── */}
+                    <div
+                        className="rounded-2xl border p-4"
+                        style={{ background: 'var(--surface-raised)', borderColor: 'var(--border)' }}
+                    >
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="w-5 h-5 rounded-md bg-blue-500/15 flex items-center justify-center">
+                                <Anchor className="w-3 h-3 text-blue-400" />
+                            </div>
+                            <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                                Whale Activity
+                            </p>
+                        </div>
+                        <MetricRow
+                            label="Net Inflow (24h)"
+                            value={
+                                <span className="flex items-center gap-1">
+                                    {whale.netInflow24h > 0 ? (
+                                        <ArrowUpRight className="w-3 h-3 text-emerald-400" />
+                                    ) : whale.netInflow24h < 0 ? (
+                                        <ArrowDownRight className="w-3 h-3 text-red-400" />
+                                    ) : (
+                                        <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                                    )}
+                                    <span style={{ color: whale.netInflow24h > 0 ? '#10B981' : whale.netInflow24h < 0 ? '#EF4444' : 'var(--text-primary)' }}>
+                                        {whale.netInflow24h > 0 ? '+' : ''}{(whale.netInflow24h * 100).toFixed(1)}%
+                                    </span>
+                                </span>
+                            }
+                        />
+                        <MetricRow label="Avg Tx Size" value={fmt(whale.avgTxSize)} />
+                        <MetricRow label="Buy Pressure" value={`${whale.buyPressure}%`} />
+                        <MetricRow label="Est. Largest Tx" value={fmt(whale.largestEstTx)} />
+                        <MetricRow label="Concentration" value={`${whale.whaleConcentration}/100`} />
+                        <MetricRow label="Risk" value={<WhaleLabel label={whale.riskLabel} />} />
+                    </div>
+
+                    {/* ── Pump Probability ─────────────────────────────────── */}
+                    <div
+                        className="rounded-2xl border p-4"
+                        style={{ background: 'var(--surface-raised)', borderColor: 'var(--border)' }}
+                    >
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-5 h-5 rounded-md bg-orange-500/15 flex items-center justify-center">
+                                <BarChart3 className="w-3 h-3 text-orange-400" />
+                            </div>
+                            <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                                Pump Probability
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-5">
+                            <PumpGauge probability={pump.probability} label={pump.label} />
+                            <div className="flex-1 space-y-1.5">
+                                <FeatureBar label="Vol Accel" value={pump.features.volumeAcceleration} />
+                                <FeatureBar label="Liq Inflow" value={pump.features.liquidityInflow} />
+                                <FeatureBar label="Momentum" value={pump.features.momentumTrend} />
+                                <FeatureBar label="Holder Growth" value={pump.features.holderGrowth} />
+                            </div>
+                        </div>
+                    </div>
+
                     {/* AI Insight */}
                     <div
                         className="rounded-2xl border p-4"
@@ -234,6 +367,30 @@ export function TokenPanel({
                     </div>
                 </div>
             </div>
+        </div>
+    );
+}
+
+/* Small bar for feature visualization */
+function FeatureBar({ label, value }: { label: string; value: number }) {
+    const pct = Math.round(value * 100);
+    return (
+        <div className="flex items-center gap-2">
+            <span className="text-[10px] w-[70px] text-right shrink-0" style={{ color: 'var(--text-muted)' }}>
+                {label}
+            </span>
+            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border)' }}>
+                <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                        width: `${pct}%`,
+                        background: pct > 70 ? '#EF4444' : pct > 40 ? '#F59E0B' : '#10B981',
+                    }}
+                />
+            </div>
+            <span className="text-[10px] font-mono w-8 num" style={{ color: 'var(--text-muted)' }}>
+                {pct}%
+            </span>
         </div>
     );
 }

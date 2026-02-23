@@ -3,12 +3,17 @@
 import { useState } from 'react';
 import { useTrendingTokens } from '@/hooks/useDegenRadar';
 import { TrendingTable } from '@/components/degen-radar/TrendingTable';
+import { HeatmapGrid } from '@/components/degen-radar/HeatmapGrid';
 import { TokenPanel } from '@/components/degen-radar/TokenPanel';
-import { Activity, Radio, ShieldAlert } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Activity, Radio, ShieldAlert, LayoutGrid, Table2 } from 'lucide-react';
+
+type ViewMode = 'table' | 'heatmap';
 
 export default function DegenRadarPage() {
     const { data: tokens = [], isLoading } = useTrendingTokens();
     const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<ViewMode>('table');
 
     return (
         <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
@@ -26,6 +31,39 @@ export default function DegenRadarPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    {/* View toggle */}
+                    <div
+                        className="flex items-center rounded-xl border p-0.5"
+                        style={{ borderColor: 'var(--border)' }}
+                    >
+                        <button
+                            onClick={() => setViewMode('table')}
+                            className={cn(
+                                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all',
+                                viewMode === 'table'
+                                    ? 'bg-violet-500/15 text-violet-400'
+                                    : 'hover:bg-black/[0.03] dark:hover:bg-white/[0.03]'
+                            )}
+                            style={{ color: viewMode === 'table' ? undefined : 'var(--text-muted)' }}
+                        >
+                            <Table2 className="w-3.5 h-3.5" />
+                            Table
+                        </button>
+                        <button
+                            onClick={() => setViewMode('heatmap')}
+                            className={cn(
+                                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all',
+                                viewMode === 'heatmap'
+                                    ? 'bg-violet-500/15 text-violet-400'
+                                    : 'hover:bg-black/[0.03] dark:hover:bg-white/[0.03]'
+                            )}
+                            style={{ color: viewMode === 'heatmap' ? undefined : 'var(--text-muted)' }}
+                        >
+                            <LayoutGrid className="w-3.5 h-3.5" />
+                            Heatmap
+                        </button>
+                    </div>
+
                     <span className="flex items-center gap-1.5 text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
                         <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
                         Live Feed
@@ -33,7 +71,7 @@ export default function DegenRadarPage() {
                 </div>
             </div>
 
-            {/* ── Section 2 — Token Intelligence Panel ─────────────── */}
+            {/* ── Token Intelligence Panel ─────────────────────────── */}
             {selectedAddress && (
                 <TokenPanel
                     address={selectedAddress}
@@ -41,15 +79,26 @@ export default function DegenRadarPage() {
                 />
             )}
 
-            {/* ── Section 1 — Trending Table ────────────────────────── */}
-            <TrendingTable
-                tokens={tokens}
-                isLoading={isLoading}
-                onSelectToken={(addr) =>
-                    setSelectedAddress((prev) => (prev === addr ? null : addr))
-                }
-                selectedAddress={selectedAddress}
-            />
+            {/* ── Data View (Table or Heatmap) ─────────────────────── */}
+            {viewMode === 'table' ? (
+                <TrendingTable
+                    tokens={tokens}
+                    isLoading={isLoading}
+                    onSelectToken={(addr) =>
+                        setSelectedAddress((prev) => (prev === addr ? null : addr))
+                    }
+                    selectedAddress={selectedAddress}
+                />
+            ) : (
+                <HeatmapGrid
+                    tokens={tokens}
+                    isLoading={isLoading}
+                    onSelectToken={(addr) =>
+                        setSelectedAddress((prev) => (prev === addr ? null : addr))
+                    }
+                    selectedAddress={selectedAddress}
+                />
+            )}
 
             {/* ── Risk Disclaimer ──────────────────────────────────── */}
             <div
