@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DefendFi Dashboard
 
-## Getting Started
+DefendFi is an institutional-grade SaaS monitoring dashboard for DeFi (Decentralized Finance) and Web3 power users. It provides advanced analytics, risk intelligence, and real-time market insights with a premium, highly responsive user interface.
 
-First, run the development server:
+## 🌟 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Institutional Topbar & Navigation**: Advanced routing with a customized mega-dropdown menu for risk intelligence and research sections.
+- **Degen Radar Module**: 
+  - **Volatility Heatmap Grid**: Visualized token volatility and market momentum using animated UI components.
+  - **Whale Wallet Tracking**: Real-time tracking of institutional and whale wallet movements.
+  - **Pump Probability Estimator**: Statistical estimation of token breakout potentials based on on-chain data.
+- **Advanced Monitoring Table**: High-performance data tables with column visibility, multi-filtering, and dynamic sorting.
+- **Theming System**: Full dark/light mode support using semantic design tokens and smooth transitions.
+- **Web3 Integrations**: Wallet connection and blockchain interactions powered by Wagmi, Viem, and RainbowKit.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💻 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Web3**: [Wagmi](https://wagmi.sh/), [Viem](https://viem.sh/), [RainbowKit](https://www.rainbowkit.com/)
+- **UI Components**: [Radix UI](https://www.radix-ui.com/), [Lucide React](https://lucide.dev/)
+- **Charts**: [Recharts](https://recharts.org/)
+- **State/Data Fetching**: [TanStack Query](https://tanstack.com/query)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+Ensure you have [Node.js](https://nodejs.org/) installed along with a package manager of your choice (`npm`, `yarn`, `pnpm`, or `bun`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/elizzwel/defendfi.git
+   cd dashboard-defi
+   ```
 
-## Deploy on Vercel
+2. Install dependencies (recommended using bun):
+   ```bash
+   bun install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Run the development server:
+   ```bash
+   bun dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 📁 Project Structure
+
+- `/src/app` - Next.js app router configuration, pages, layouts, and system configurations.
+- `/src/components` - Reusable UI components including isolated modules like `degen-radar` and `topbar`.
+- `/src/lib` - Utility functions, custom hooks, typings, and other configurations.
+
+## 📄 License
+
+This project is proprietary and confidential.
+
+---
+*Built with passion for the Web3 Ecosystem.*
